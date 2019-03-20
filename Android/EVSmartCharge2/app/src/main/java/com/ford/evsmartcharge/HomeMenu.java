@@ -1,14 +1,12 @@
 package com.ford.evsmartcharge;
 
+import android.bluetooth.BluetoothHeadset;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
-import android.app.NotificationManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,24 +18,20 @@ import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.bluetooth.BluetoothHeadset;
-import android.bluetooth.BluetoothAdapter;
-import android. bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothProfile;
 
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.iid.FirebaseInstanceId;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.io.InputStreamReader;
-import java.net.Socket;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.Channel;
+
 import java.text.DecimalFormat;
 
-import static java.sql.DriverManager.println;
-
 public class HomeMenu extends Fragment implements View.OnClickListener {
+
+
+    //private ConnectionFactory factory = new ConnectionFactory();
+
     private SeekBar mSeekBar;
     private TextView mChargeText;
     private TextView mFeedbackText;
@@ -54,8 +48,22 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
     private BluetoothHeadset mBluetoothHeadset;
     private double batteryCapacity = 0;
     private DatabaseReference mDatabase;
-
     private static final String TAG = HomeMenu.class.getSimpleName();
+
+
+    //String to store app information to send to simulation
+    /*
+    All encoded parsing helpers
+    Battery Capacity    "-BC:"
+    Charge Speed        "-CS:"
+    Charge Update `     "-CU:"
+    Charge Request      "-CR:"
+    Port Request        "-PR:"
+     */
+
+    public String txData;
+    public String rxData;
+
 
     @Nullable
     @Override
@@ -65,6 +73,7 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
         mPrefEdit = mPref.edit();
         return inflater.inflate(R.layout.fragment_home_menu, container, false);
     }
+
 
 
     @Override
@@ -94,11 +103,19 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
 
         switch(mPref.getString(this.getString(R.string.pref_car_key), "0")) {
             case "0": // C-Max Energi SE
+                batteryCapacity = 8.0;
+                mSeekBar.setMax(100);                   // Sets seekbar to 100%
+             txData += "-BC:" + batteryCapacity; // Sets battery cap to comm. string
+                break;
             case "1": // Fusion Energi SE
-                batteryCapacity = 7.6;
+                batteryCapacity = 9.0;
+                mSeekBar.setMax(100);       // Sets seekbar to 100%
+                txData += "-BC:" + batteryCapacity; // Sets battery cap to comm. string
                 break;
             case "2": // Focus Electric
                 batteryCapacity = 33.5;
+                mSeekBar.setMax(100);       // Sets seekbar to 100%
+                txData += "-BC:" + batteryCapacity; // Sets battery cap to comm. string
                 break;
             default:
                 Log.d(TAG, "Invalid value");
@@ -167,10 +184,16 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
 
         if(mPref.getString(this.getString(R.string.pref_unit_key), "0").equals("1")) {
             // Miles - assuming 4 mi/kWh
-            double miles = (4 * (batteryCapacity) * (seekVal/100.));
-            DecimalFormat df = new DecimalFormat("#.##");
-            x += df.format(miles) + " miles";
-
+            int miles = (4 * (int) ((batteryCapacity) * (seekVal / 100.)));
+            //Removed decimal to look pretty
+            //DecimalFormat df = new DecimalFormat("#.##");
+            x += /*df.format(miles)*/ miles + " miles";
+        } else if(mPref.getString(this.getString(R.string.pref_unit_key), "0").equals("2")) {
+            // Kilometers calculated from Miles - assuming 4 mi/kWh
+            int kilometers = (4 * (int)((batteryCapacity) * 1.60934 * (seekVal/100.)));
+            //Removed decimal to look pretty
+            //DecimalFormat df = new DecimalFormat("#.##");
+            x += /*df.format(kilometers)*/ kilometers + " kilometers";
         } else {
             // SOC %
             x += seekVal + "% Charge";
@@ -228,19 +251,31 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
             zero = "0";
         }
 
-        // Format charge as percentage or miles
+        // Format charge as percentage, miles, or kilometers
         String requestedCharge = "";
         if(mPref.getString(this.getString(R.string.pref_unit_key), "0").equals("1")) { // miles format
-            double miles = (4 * (batteryCapacity) * (seekVal / 100.)); // 4 is arbitrary 4 mi/kWh
+
+            double miles = (4 * (int) (batteryCapacity) * (seekVal / 100.)); // 4 is arbitrary 4 mi/kWh
+            double kilometers = miles * 1.60934;                               // Distance in Kilometers.
             DecimalFormat df = new DecimalFormat("#.##");
             requestedCharge += df.format(miles) + " miles";
+            txData += "-RC:" + seekVal; // Sets Charge Request to comm. string
+
+        } else if(mPref.getString(this.getString(R.string.pref_unit_key), "0").equals("2")) { // kilometers format
+
+            int kilometers = (4 * (int)((batteryCapacity) * 1.60934 * (seekVal/100.)));  // Distance in km. 1.6.934 is conversion factor
+            requestedCharge += kilometers + " kilometers";
+            txData += "-RC:" + seekVal; // Sets Charge Request to comm. string
+
         } else { // percent format
             requestedCharge += seekVal + "%";
+            txData += "-RC:" + requestedCharge; // Sets Charge Request to comm. string
         }
 
         mFeedbackText.setText(new StringBuilder().append("Your car will be charged to ")
                 .append(requestedCharge).append(" by ").append(hour).append(":")
                 .append(zero).append(min).append(" ").append(format));
+
     }
 
     // The task class
@@ -264,6 +299,7 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
             //avalue = (String) a.get("member");
 
             try {
+                /*
                 // Get device registration ID
                 userID = FirebaseInstanceId.getInstance().getToken();
 
@@ -277,20 +313,21 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
 
 
 
-                //Socket soc = new Socket("192.168.1.13" , 8888);
-                //PrintWriter out = new PrintWriter(soc.getOutputStream(), true);
-                //BufferedReader in = new BufferedReader(
+                Socket soc = new Socket("192.168.1.13" , 8888);
+                PrintWriter out = new PrintWriter(soc.getOutputStream(), true);
+                BufferedReader in = new BufferedReader(
                                         //new InputStreamReader(soc.getInputStream()));
-                //BufferedReader stdIn =
-                        //new BufferedReader(new InputStreamReader(System.in));
+                BufferedReader stdIn =
+                        new BufferedReader(new InputStreamReader(System.in));
 
-                //out.print(batCap + " " + initialSOC + " " + hour + " " + min + " " + reqCharge);
-                //out.flush();
-                //in.read(bvalue,1024,1024);
-                //i = new Intent(HomeMenu.this.getActivity(), Notification.class);
-                //i.putExtra("message", bvalue);
-                //startActivityForResult(i,0);
-                //soc.close();
+                out.print(batCap + " " + initialSOC + " " + hour + " " + min + " " + reqCharge);
+                out.flush();
+                in.read(bvalue,1024,1024);
+                i = new Intent(HomeMenu.this.getActivity(), Notification.class);
+                i.putExtra("message", bvalue);
+                startActivityForResult(i,0);
+                soc.close();
+                */
                 return "1";
 
             } catch(Exception e){
@@ -308,8 +345,27 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
         }
+
+        public void TxSendToSim(View view)
+        {
+
+        }
+        /*
+        public class Send {
+            private final static String QUEUE_NAME = "hello";
+            public void main(String[] argv) throws Exception {
+                ConnectionFactory factory = new ConnectionFactory();
+                factory.setHost("amqp://msprqdua:XO-wSDRahPG_y2HHwzLlP80B0NiB31h-@wombat.rmq.cloudamqp.com/msprqdua");
+                try (Connection connection = factory.newConnection();
+                     Channel channel = connection.createChannel()) {
+                    channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+                    String message = "Hello World!";
+                    channel.basicPublish("", QUEUE_NAME, null, message.getBytes("UTF-8"));
+                    System.out.println(" [x] Sent '" + message + "'");
+                }
+            }
+        }
+        */
+
     }
-
-
-
 }

@@ -29,14 +29,33 @@
     <string-array name="units_array">
         <item>State of Charge (percent)</item>
         <item>Distance (mi)</item>
+        <item>Distance (km)</item>
     </string-array>
+
     <!-- Choices for the units -->
     <string-array name="units_values">
         <item>0</item>
         <item>1</item>
+        <item>2</item>
     </string-array>
 
-    <string name="header">Enter your departure time, desired charge, and port.</string>
+    <!--
+    <string name="pref_econ_key">econ</string>
+    <string name="pref_econ_info">Economy</string>
+    <string-array name="econ_array">
+        <item>Economy </item>
+        <item>Express </item>
+    </string-array>
+
+
+    <string-array name="econ_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    -->
+
+    //Main Menu Text
+    <string name="header">Enter your departure time, charge/distance, and port.</string>
     <string name="p_zero">Port 0</string>
     <string name="p_one">Port 1</string>
     <string name="p_two">Port 2</string>

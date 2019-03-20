@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity
     private SharedPreferences mPref;
     private SharedPreferences.Editor mPrefEdit;
     private Intent OK, cancel, login2;
+
+    //Clearly not finished. Only creates random number. Needs an input.
     public static int initialCharge = (int)(Math.random() * 50);
 
     @Override
