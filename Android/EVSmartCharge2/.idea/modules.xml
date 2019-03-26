@@ -10,7 +10,6 @@
       <module fileurl="file://$PROJECT_DIR$/commons-io-1.2/commons-io-1.2.iml" filepath="$PROJECT_DIR$/commons-io-1.2/commons-io-1.2.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib/lib.iml" filepath="$PROJECT_DIR$/lib/lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/libs/libs.iml" filepath="$PROJECT_DIR$/libs/libs.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rabbitmq-client/rabbitmq-client.iml" filepath="$PROJECT_DIR$/rabbitmq-client/rabbitmq-client.iml" />
       <module fileurl="file://$PROJECT_DIR$/slf4j-api-1.7.25/slf4j-api-1.7.25.iml" filepath="$PROJECT_DIR$/slf4j-api-1.7.25/slf4j-api-1.7.25.iml" />
     </modules>
   </component>

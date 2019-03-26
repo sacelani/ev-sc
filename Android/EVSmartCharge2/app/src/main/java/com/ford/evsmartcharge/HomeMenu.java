@@ -30,7 +30,7 @@ import java.text.DecimalFormat;
 public class HomeMenu extends Fragment implements View.OnClickListener {
 
 
-    //private ConnectionFactory factory = new ConnectionFactory();
+    private ConnectionFactory factory = new ConnectionFactory();
 
     private SeekBar mSeekBar;
     private TextView mChargeText;
