@@ -21,16 +21,13 @@ import android.widget.TimePicker;
 
 import com.google.firebase.database.DatabaseReference;
 
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.*;
 
 import java.text.DecimalFormat;
 
 public class HomeMenu extends Fragment implements View.OnClickListener {
 
 
-    private ConnectionFactory factory = new ConnectionFactory();
 
     private SeekBar mSeekBar;
     private TextView mChargeText;
@@ -202,11 +199,28 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
         mChargeText.setText(new StringBuilder(x));
     }
 
+    public void send( ) throws Exception {
+
+        String EXCHANGE_NAME = "test";
+
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("amqp://msprqdua:XO-wSDRahPG_y2HHwzLlP80B0NiB31h-@wombat.rmq.cloudamqp.com/msprqdua");
+        try (Connection connection = factory.newConnection();
+             Channel channel = connection.createChannel()) {
+            channel.exchangeDeclare(EXCHANGE_NAME, "topic");
+
+            //String severity = getSeverity(argv);
+            String message = "Hello World!";
+
+            channel.basicPublish(EXCHANGE_NAME, "ev-sc", null, message.getBytes("UTF-8"));
+            System.out.println(" [x] Sent '" + "ev-sc" + "':'" + message + "'");
+        }
+    }
+
     // Take the desired time & requested charge amount
     // Print these values, forward to station simulation
     // ** Simulation will change start time, but keep desired end time **
-    public void submitChargeRequest(View view)
-    {
+    public void submitChargeRequest(View view) {
         int hour = mTimePicker.getCurrentHour();
         int min = mTimePicker.getCurrentMinute();
         int seekVal = mSeekBar.getProgress();
@@ -231,7 +245,7 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
 
         // send packet to station
         new PostTask().execute(Double.toString(batteryCapacity), Integer.toString(MainActivity.initialCharge),
-                               Integer.toString(hour), Integer.toString(min), Integer.toString(seekVal), Integer.toString(port_num));
+                Integer.toString(hour), Integer.toString(min), Integer.toString(seekVal), Integer.toString(port_num));
 
         // format the time for better readability
         String format;
@@ -247,13 +261,13 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
         } else {
             format = "AM";
         }
-        if(min < 10) {
+        if (min < 10) {
             zero = "0";
         }
 
         // Format charge as percentage, miles, or kilometers
         String requestedCharge = "";
-        if(mPref.getString(this.getString(R.string.pref_unit_key), "0").equals("1")) { // miles format
+        if (mPref.getString(this.getString(R.string.pref_unit_key), "0").equals("1")) { // miles format
 
             double miles = (4 * (int) (batteryCapacity) * (seekVal / 100.)); // 4 is arbitrary 4 mi/kWh
             double kilometers = miles * 1.60934;                               // Distance in Kilometers.
@@ -261,9 +275,9 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
             requestedCharge += df.format(miles) + " miles";
             txData += "-RC:" + seekVal; // Sets Charge Request to comm. string
 
-        } else if(mPref.getString(this.getString(R.string.pref_unit_key), "0").equals("2")) { // kilometers format
+        } else if (mPref.getString(this.getString(R.string.pref_unit_key), "0").equals("2")) { // kilometers format
 
-            int kilometers = (4 * (int)((batteryCapacity) * 1.60934 * (seekVal/100.)));  // Distance in km. 1.6.934 is conversion factor
+            int kilometers = (4 * (int) ((batteryCapacity) * 1.60934 * (seekVal / 100.)));  // Distance in km. 1.6.934 is conversion factor
             requestedCharge += kilometers + " kilometers";
             txData += "-RC:" + seekVal; // Sets Charge Request to comm. string
 
@@ -272,9 +286,17 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
             txData += "-RC:" + requestedCharge; // Sets Charge Request to comm. string
         }
 
+        try {
+            send();
+        } catch (Exception e){
+
+        }
+
+
         mFeedbackText.setText(new StringBuilder().append("Your car will be charged to ")
                 .append(requestedCharge).append(" by ").append(hour).append(":")
                 .append(zero).append(min).append(" ").append(format));
+
 
     }
 
@@ -346,26 +368,6 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
             super.onPostExecute(result);
         }
 
-        public void TxSendToSim(View view)
-        {
-
-        }
-        /*
-        public class Send {
-            private final static String QUEUE_NAME = "hello";
-            public void main(String[] argv) throws Exception {
-                ConnectionFactory factory = new ConnectionFactory();
-                factory.setHost("amqp://msprqdua:XO-wSDRahPG_y2HHwzLlP80B0NiB31h-@wombat.rmq.cloudamqp.com/msprqdua");
-                try (Connection connection = factory.newConnection();
-                     Channel channel = connection.createChannel()) {
-                    channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-                    String message = "Hello World!";
-                    channel.basicPublish("", QUEUE_NAME, null, message.getBytes("UTF-8"));
-                    System.out.println(" [x] Sent '" + message + "'");
-                }
-            }
-        }
-        */
 
     }
 }
