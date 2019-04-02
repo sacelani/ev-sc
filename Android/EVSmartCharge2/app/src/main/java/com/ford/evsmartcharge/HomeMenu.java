@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.preference.PreferenceManager;
@@ -26,6 +27,8 @@ import com.rabbitmq.client.*;
 import java.text.DecimalFormat;
 
 public class HomeMenu extends Fragment implements View.OnClickListener {
+
+
 
 
 
@@ -62,6 +65,8 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
     public String rxData;
 
 
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -82,7 +87,7 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
         mSeekBar = (SeekBar) getActivity().findViewById(R.id.charge_bar);
         //mSeekBar.setProgress(mPref.getInt(getString(R.string.slider_location), 69));
         if(mPref.getInt(getString(R.string.slider_location), 0) == -1) {
-            System.out.print("STORED VAL IS -1");
+            System.out.println("STORED VAL IS -1");
             mSeekBar.setProgress(MainActivity.initialCharge);
         } else {
             mSeekBar.setProgress(mPref.getInt(getString(R.string.slider_location), 0));
@@ -199,23 +204,6 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
         mChargeText.setText(new StringBuilder(x));
     }
 
-    public void send( ) throws Exception {
-
-        String EXCHANGE_NAME = "test";
-
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("amqp://msprqdua:XO-wSDRahPG_y2HHwzLlP80B0NiB31h-@wombat.rmq.cloudamqp.com/msprqdua");
-        try (Connection connection = factory.newConnection();
-             Channel channel = connection.createChannel()) {
-            channel.exchangeDeclare(EXCHANGE_NAME, "topic");
-
-            //String severity = getSeverity(argv);
-            String message = "Hello World!";
-
-            channel.basicPublish(EXCHANGE_NAME, "ev-sc", null, message.getBytes("UTF-8"));
-            System.out.println(" [x] Sent '" + "ev-sc" + "':'" + message + "'");
-        }
-    }
 
     // Take the desired time & requested charge amount
     // Print these values, forward to station simulation
@@ -287,9 +275,31 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
         }
 
         try {
-            send();
-        } catch (Exception e){
+            new Thread(new Runnable(){
+                @Override
+                public void run() {
+                    String EXCHANGE_NAME = "hello";
 
+                    ConnectionFactory factory = new ConnectionFactory();
+                    factory.setHost("10.0.2.2");
+                    try (Connection connection = factory.newConnection();
+                         Channel channel = connection.createChannel()) {
+                        channel.queueDeclare(EXCHANGE_NAME, false, false, false, null);
+                        //channel.exchangeDeclare(EXCHANGE_NAME, "topic");
+
+                        //String severity = getSeverity(argv);
+                        String message = "I'm freakin 1337!";
+                        channel.basicPublish("", EXCHANGE_NAME, null, message.getBytes());
+                       // channel.basicPublish(EXCHANGE_NAME, "ev-sc", null, message.getBytes("UTF-8"));
+                        System.out.println(" [x] Sent '" + "ev-sc" + "':'" + message + "'");
+                    } catch(Exception e){
+                        System.out.println(e);
+                    }
+                }
+            }).start();
+
+        } catch (Exception e){
+            System.out.println(e);
         }
 
 
@@ -299,6 +309,29 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
 
 
     }
+
+/*
+    public void send( ) throws Exception {
+
+        String EXCHANGE_NAME = "test";
+
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("amqp://msprqdua:XO-wSDRahPG_y2HHwzLlP80B0NiB31h-@wombat.rmq.cloudamqp.com/msprqdua");
+        try (Connection connection = factory.newConnection();
+             Channel channel = connection.createChannel()) {
+            channel.exchangeDeclare(EXCHANGE_NAME, "topic");
+
+            //String severity = getSeverity(argv);
+            String message = "Hello World!";
+
+            channel.basicPublish(EXCHANGE_NAME, "ev-sc", null, message.getBytes("UTF-8"));
+            System.out.println(" [x] Sent '" + "ev-sc" + "':'" + message + "'");
+        } catch(Exception e){
+            System.out.println(e);
+        }
+    }
+*/
+
 
     // The task class
     private class PostTask extends AsyncTask<String, Integer, String> {
