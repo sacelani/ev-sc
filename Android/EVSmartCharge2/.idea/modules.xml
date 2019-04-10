@@ -4,11 +4,15 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/EVSmartCharge2.iml" filepath="$PROJECT_DIR$/EVSmartCharge2.iml" />
       <module fileurl="file://$PROJECT_DIR$/amqp-client-5.5.1/amqp-client-5.5.1.iml" filepath="$PROJECT_DIR$/amqp-client-5.5.1/amqp-client-5.5.1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/amqp-client-5.5.1/amqp-client-5.5.1.iml" filepath="$PROJECT_DIR$/amqp-client-5.5.1/amqp-client-5.5.1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/amqp-client-5.6.0/amqp-client-5.6.0.iml" filepath="$PROJECT_DIR$/amqp-client-5.6.0/amqp-client-5.6.0.iml" />
       <module fileurl="file://$PROJECT_DIR$/amqp-client-5.6.0/amqp-client-5.6.0.iml" filepath="$PROJECT_DIR$/amqp-client-5.6.0/amqp-client-5.6.0.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/commons-cli-1.1/commons-cli-1.1.iml" filepath="$PROJECT_DIR$/commons-cli-1.1/commons-cli-1.1.iml" />
       <module fileurl="file://$PROJECT_DIR$/commons-io-1.2/commons-io-1.2.iml" filepath="$PROJECT_DIR$/commons-io-1.2/commons-io-1.2.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib/lib.iml" filepath="$PROJECT_DIR$/lib/lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib/lib.iml" filepath="$PROJECT_DIR$/lib/lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/libs.iml" filepath="$PROJECT_DIR$/libs/libs.iml" />
       <module fileurl="file://$PROJECT_DIR$/libs/libs.iml" filepath="$PROJECT_DIR$/libs/libs.iml" />
       <module fileurl="file://$PROJECT_DIR$/slf4j-api-1.7.25/slf4j-api-1.7.25.iml" filepath="$PROJECT_DIR$/slf4j-api-1.7.25/slf4j-api-1.7.25.iml" />
     </modules>

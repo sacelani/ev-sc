@@ -20,11 +20,16 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.util.Calendar;
+
+
+
 import com.google.firebase.database.DatabaseReference;
 
 import com.rabbitmq.client.*;
 
 import java.text.DecimalFormat;
+import java.util.Date;
 
 public class HomeMenu extends Fragment implements View.OnClickListener {
 
@@ -41,7 +46,7 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
     private RadioButton mRadioButton;
     private Intent login, login2;
     private SharedPreferences mPref;
-    private String message;
+    private String message = "";
     private Intent i;
     private char bvalue[] = new char[1024];
     private SharedPreferences.Editor mPrefEdit;
@@ -49,6 +54,9 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
     private double batteryCapacity = 0;
     private DatabaseReference mDatabase;
     private static final String TAG = HomeMenu.class.getSimpleName();
+    private String portNumber = "0";
+    private String rCharge = "";
+    private Date currentTime = Calendar.getInstance().getTime();
 
 
     //String to store app information to send to simulation
@@ -60,9 +68,6 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
     Charge Request      "-CR:"
     Port Request        "-PR:"
      */
-
-    public String txData;
-    public String rxData;
 
 
 
@@ -107,17 +112,17 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
             case "0": // C-Max Energi SE
                 batteryCapacity = 8.0;
                 mSeekBar.setMax(100);                   // Sets seekbar to 100%
-             txData += "-BC:" + batteryCapacity; // Sets battery cap to comm. string
+             message += "-BC:" + batteryCapacity; // Sets battery cap to comm. string
                 break;
             case "1": // Fusion Energi SE
                 batteryCapacity = 9.0;
                 mSeekBar.setMax(100);       // Sets seekbar to 100%
-                txData += "-BC:" + batteryCapacity; // Sets battery cap to comm. string
+                message += "-BC:" + batteryCapacity; // Sets battery cap to comm. string
                 break;
             case "2": // Focus Electric
                 batteryCapacity = 33.5;
                 mSeekBar.setMax(100);       // Sets seekbar to 100%
-                txData += "-BC:" + batteryCapacity; // Sets battery cap to comm. string
+                message += "-BC:" + batteryCapacity; // Sets battery cap to comm. string
                 break;
             default:
                 Log.d(TAG, "Invalid value");
@@ -215,18 +220,23 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
         int space = mRadioGroup.getCheckedRadioButtonId();
         int port_num = 0;
 
+
         switch (space) {
             case R.id.buttZero:
                 port_num = 0;
+                portNumber = "0";
                 break;
             case R.id.buttOne:
                 port_num = 1;
+                portNumber = "1";
                 break;
             case R.id.buttTwo:
                 port_num = 2;
+                portNumber = "2";
                 break;
             case R.id.buttThree:
                 port_num = 3;
+                portNumber = "3";
                 break;
 
         }
@@ -255,25 +265,24 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
 
         // Format charge as percentage, miles, or kilometers
         String requestedCharge = "";
+        rCharge = String.valueOf(seekVal);
         if (mPref.getString(this.getString(R.string.pref_unit_key), "0").equals("1")) { // miles format
 
             double miles = (4 * (int) (batteryCapacity) * (seekVal / 100.)); // 4 is arbitrary 4 mi/kWh
             double kilometers = miles * 1.60934;                               // Distance in Kilometers.
             DecimalFormat df = new DecimalFormat("#.##");
             requestedCharge += df.format(miles) + " miles";
-            txData += "-RC:" + seekVal; // Sets Charge Request to comm. string
+            rCharge += df.format(miles);
 
         } else if (mPref.getString(this.getString(R.string.pref_unit_key), "0").equals("2")) { // kilometers format
 
             int kilometers = (4 * (int) ((batteryCapacity) * 1.60934 * (seekVal / 100.)));  // Distance in km. 1.6.934 is conversion factor
             requestedCharge += kilometers + " kilometers";
-            txData += "-RC:" + seekVal; // Sets Charge Request to comm. string
 
         } else { // percent format
             requestedCharge += seekVal + "%";
-            txData += "-RC:" + requestedCharge; // Sets Charge Request to comm. string
         }
-
+                                    //TODO
         try {
             new Thread(new Runnable(){
                 @Override
@@ -287,9 +296,18 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
                         Channel channel = connection.createChannel();
                         channel.confirmSelect();
                         factory.setAutomaticRecoveryEnabled(false);
-                        String message = "Hello freakin world! :D";
+
+                        //Initiate Message
+                        message = "";
+                        message += "-BC:" + batteryCapacity;
+                        message += "-RC:" + rCharge;
+                        message += "-PC:" + seekVal;
+                        message += "-PN:" + portNumber;
+                        message += "-ET:" + mTimePicker.getCurrentHour() + ":" + mTimePicker.getCurrentMinute();
+
                         channel.basicPublish("", EXCHANGE_NAME, null, message.getBytes());
                         System.out.println(" [x] Sent '" + "ev-sc" + "':'" + message + "'");
+                        message = "";
                     } catch(Exception e){
                         System.out.println(e);
                     }
@@ -308,27 +326,6 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
 
     }
 
-/*
-    public void send( ) throws Exception {
-
-        String EXCHANGE_NAME = "test";
-
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("amqp://msprqdua:XO-wSDRahPG_y2HHwzLlP80B0NiB31h-@wombat.rmq.cloudamqp.com/msprqdua");
-        try (Connection connection = factory.newConnection();
-             Channel channel = connection.createChannel()) {
-            channel.exchangeDeclare(EXCHANGE_NAME, "topic");
-
-            //String severity = getSeverity(argv);
-            String message = "Hello World!";
-
-            channel.basicPublish(EXCHANGE_NAME, "ev-sc", null, message.getBytes("UTF-8"));
-            System.out.println(" [x] Sent '" + "ev-sc" + "':'" + message + "'");
-        } catch(Exception e){
-            System.out.println(e);
-        }
-    }
-*/
 
 
     // The task class
