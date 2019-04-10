@@ -23,6 +23,11 @@ import pika, os, time
 ADD_CAR = 1
 DEBUG = 0
 
+ChargeCapacity = 0
+ChargeSpeed = 0
+ChargeUpdate = 0
+ChargeRequest = 0
+PortRequest = 0
 
 # -----------------------------------------------------------------------------
 # Func: Calculates the charge rate in kilowatts for each of the cars parked
@@ -200,7 +205,7 @@ def appToSim(inputString):
 		if (cmd == "CS"):
 			ChargeSpeed = commIDPair["CS"]
 		if (cmd == "CU"):
-			ChargeUpdage = commIDPair["CU"]
+			ChargeUpdate = commIDPair["CU"]
 		if (cmd == "CR"):
 			ChargeRequest = commIDPair["CR"]
 		if (cmd == "PR"):
@@ -255,17 +260,18 @@ def main():
     # ------------ initialize the day of vehicles for simulation ------------ #
 
     # init vehicle arrays (packCapacity, arrival, departure, requestedCharge, maxChargeRate, initialSOC, time)
+    
     vehicles_port0 = [Vehicle(40., 7.5,   11.5, 32., 16., 20., time),   # 7:30 am - 11:30 am
                       Vehicle(50., 13.25, 17.,  40., 16., 15., time),   # 1:15 pm - 5 pm
-                      Vehicle(23., 17.5,  18.,  15., 50., 14., time)]   # 5:30 pm - 6 pm
+                      None] #Vehicle(23., 17.5,  18.,  15., 50., 14., time)]   # 5:30 pm - 6 pm
 
     vehicles_port1 = [Vehicle(35., 7.75,  14.5, 30., 16., 10., time),   # 7:45 am  - 2:30 pm
                       Vehicle(40., 14.75, 17.,  25., 16., 20., time),   # 2:45 pm - 5 pm
-                      Vehicle(50., 17.25, 18.,  40., 50., 30., time)]   # 5:15 pm  - 6 pm
+                      None] #Vehicle(50., 17.25, 18.,  40., 50., 30., time)]   # 5:15 pm  - 6 pm
 
     vehicles_port2 = [Vehicle(40., 7.5,  11.5, 32., 16., 30., time),    # 7:30 am - 11:30 am
                       Vehicle(50., 11.5, 17.,  40., 16., 2., time),     # 11:30 am - 5 pm
-                      Vehicle(50., 17.5, 18.,  40., 50., 37., time)]    # 5:30 pm - 6 pm
+                      None] #Vehicle(50., 17.5, 18.,  40., 50., 37., time)]    # 5:30 pm - 6 pm
 
     vehicles_port3 = [Vehicle(50., 7.75,  13.5, 50., 20., 34., time),   # 7:45 am - 1:30 pm
                       Vehicle(40., 13.5,  17.,  30., 19., 20., time),   # 1:30 pm - 5 pm
