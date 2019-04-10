@@ -279,18 +279,16 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
                 @Override
                 public void run() {
                     String EXCHANGE_NAME = "hello";
-
                     ConnectionFactory factory = new ConnectionFactory();
-                    factory.setHost("10.0.2.2");
-                    try (Connection connection = factory.newConnection();
-                         Channel channel = connection.createChannel()) {
-                        channel.queueDeclare(EXCHANGE_NAME, false, false, false, null);
-                        //channel.exchangeDeclare(EXCHANGE_NAME, "topic");
-
-                        //String severity = getSeverity(argv);
-                        String message = "I'm freakin 1337!";
+                    String uri = "amqp://msprqdua:XO-wSDRahPG_y2HHwzLlP80B0NiB31h-@wombat.rmq.cloudamqp.com/msprqdua";   //The URL for AMQP
+                    try {
+                        factory.setUri(uri);
+                        Connection connection = factory.newConnection();
+                        Channel channel = connection.createChannel();
+                        channel.confirmSelect();
+                        factory.setAutomaticRecoveryEnabled(false);
+                        String message = "Hello freakin world! :D";
                         channel.basicPublish("", EXCHANGE_NAME, null, message.getBytes());
-                       // channel.basicPublish(EXCHANGE_NAME, "ev-sc", null, message.getBytes("UTF-8"));
                         System.out.println(" [x] Sent '" + "ev-sc" + "':'" + message + "'");
                     } catch(Exception e){
                         System.out.println(e);
