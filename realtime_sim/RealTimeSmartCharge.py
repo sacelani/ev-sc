@@ -6,6 +6,7 @@
 # 11/13/16   Cason      Commented everything & made option for < full charge
 #                       Now prints out if car reaches desired charge or not
 # 11/27/16   Libbey     Socket connection with Android application
+# 4/10/16    Michael    Changes to take input from rabbitMQ and parse input into sim variables
 # -----------------------------------------------------------------------------
 
 from Vehicle import *
@@ -15,6 +16,7 @@ from Station import *
 import numpy as np
 import matplotlib.pyplot as plt
 from socket import *
+import pika, os, time
 
 
 #ENABLE/DISABLE FLAGS
@@ -165,6 +167,71 @@ def gather_app_data():
     data[3] = data[3]/100.
 
     return data
+
+#Example input BC:7-CS:3-.....
+#BC - Charge Capacity
+#CS - Charge Speed
+#CU - Charge Update
+#CR - Charge Request
+#PR - Port Request
+def appToSim(inputString):
+	#inputString = "-BC:7.235-CS:5.322-"
+	commandList = inputString.split("-")  #Split input string into commands
+	commandList = commandList[1:]	
+	commandList = commandList[:-1]  #Remove empty command resulting in last "-"
+	
+	command = "" #storage for individual command from Command List
+	
+	# identifier="" #Identifier from a given command ex: "BC"
+	
+	commIDPair = {}
+	
+	value = 0     #Float value of the command
+	
+	
+	for cmd in commandList:
+		command = cmd.split(":")
+		commIDPair.update({ command[0] : float(command[1]) })
+		#print(commIDPair[command[0]])
+		
+	for cmd in commIDPair:
+		if (cmd == "BC"):
+			ChargeCapcity = commIDPair["BC"]
+		if (cmd == "CS"):
+			ChargeSpeed = commIDPair["CS"]
+		if (cmd == "CU"):
+			ChargeUpdage = commIDPair["CU"]
+		if (cmd == "CR"):
+			ChargeRequest = commIDPair["CR"]
+		if (cmd == "PR"):
+			PortRequest = commIDPair["PR"]
+
+
+
+
+#listens for data from rabbitMQ connection
+def dataFromApp():
+	# Access the CLODUAMQP_URL environment variable and parse it (fallback to localhost)
+	url = os.environ.get('CLOUDAMQP_URL', 'amqp://msprqdua:XO-wSDRahPG_y2HHwzLlP80B0NiB31h-@wombat.rmq.cloudamqp.com/msprqdua')
+	params = pika.URLParameters(url)
+	connection = pika.BlockingConnection(params)
+	channel = connection.channel() # start a channel
+	channel.queue_delete(queue='hello')  # Delete Queue 
+	channel.queue_declare(queue='hello') # Declare a queue
+	
+	# create a function which is called on incoming messages
+	def callback(ch, method, properties, body):
+		print("Received: %r" % body)
+	
+	# set up subscription on the queue
+	channel.basic_consume(consumer_callback = callback, queue='hello')
+	
+	# start consuming (blocks)
+	print("Waiting for messages.   Press CRTL+C to exit.")
+	channel.start_consuming()
+	appToSim(body)
+	
+
 
 # -----------------------------------------------------------------------------
 # Func: Main method
