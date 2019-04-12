@@ -20,7 +20,7 @@ def appToSim(inputString):
 	
 	
 	for cmd in commandList:
-		command = cmd.split(":")
+		command = cmd.split(";")
 		commIDPair.update({ command[0] : float(command[1]) })
 		#print(commIDPair[command[0]])
 		

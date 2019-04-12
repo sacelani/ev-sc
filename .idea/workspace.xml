@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e70ef3ef-6e52-44f7-baa4-442e7ee18980" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="8768fc65-af4b-4310-a93f-42b031d84c21" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/Android/EVSmartCharge2/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/Android/EVSmartCharge2/.idea/caches/build_file_checksums.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Android/EVSmartCharge2/.idea/caches/gradle_models.ser" beforeDir="false" afterPath="$PROJECT_DIR$/Android/EVSmartCharge2/.idea/caches/gradle_models.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Android/EVSmartCharge2/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Android/EVSmartCharge2/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Android/EVSmartCharge2/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Android/EVSmartCharge2/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Android/EVSmartCharge2/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Android/EVSmartCharge2/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Android/EVSmartCharge2/app/src/main/java/com/ford/evsmartcharge/HomeMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/Android/EVSmartCharge2/app/src/main/java/com/ford/evsmartcharge/HomeMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pika/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pika/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pika/send2.py" beforeDir="false" afterPath="$PROJECT_DIR$/pika/send2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/realtime_sim/RealTimeSmartCharge.py" beforeDir="false" afterPath="$PROJECT_DIR$/realtime_sim/RealTimeSmartCharge.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/receiveData.py" beforeDir="false" afterPath="$PROJECT_DIR$/receiveData.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -11,46 +20,44 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+    <leaf>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/receive2.py">
+        <entry file="file://$PROJECT_DIR$/pika/send2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="32" selection-start-line="5" selection-start-column="32" selection-end-line="5" selection-end-column="32" />
+            <state relative-caret-position="238">
+              <caret line="14" column="76" selection-start-line="14" selection-start-column="76" selection-end-line="14" selection-end-column="76" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/../realtime_sim/RealTimeSmartCharge.py">
+        <entry file="file://$PROJECT_DIR$/realtime_sim/RealTimeSmartCharge.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2742" />
+            <state relative-caret-position="-545">
+              <caret line="280" column="22" selection-start-line="280" selection-start-column="22" selection-end-line="280" selection-end-column="22" />
+            </state>
           </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/send2.py">
-          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
     </leaf>
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Python Script" />
-      </list>
-    </option>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>socket</find>
+      <find>stationAlg</find>
+      <find>addCar</find>
+      <find>import</find>
+    </findStrings>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/send.py" />
-        <option value="$PROJECT_DIR$/receive.py" />
-        <option value="$PROJECT_DIR$/receive2.py" />
+        <option value="$PROJECT_DIR$/receiveData.py" />
+        <option value="$PROJECT_DIR$/pika/send2.py" />
+        <option value="$PROJECT_DIR$/realtime_sim/RealTimeSmartCharge.py" />
       </list>
     </option>
   </component>
@@ -59,28 +66,37 @@
     <option name="width" value="854" />
     <option name="height" value="1017" />
   </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
-              <item name="pika" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ev-sc" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ev-sc" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ev-sc" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ev-sc" type="462c0819:PsiDirectoryNode" />
               <item name="pika" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ev-sc" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ev-sc" type="462c0819:PsiDirectoryNode" />
+              <item name="realtime_sim" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../realtime_sim/RealTimeSmartCharge.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -94,20 +110,20 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.receive2">
-    <configuration name="receive" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="pika" />
+  <component name="RunManager" selected="Python.send2">
+    <configuration name="RealTimeSmartCharge" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="ev-sc" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/realtime_sim" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/receive.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/realtime_sim/RealTimeSmartCharge.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -117,39 +133,18 @@
       <method v="2" />
     </configuration>
     <configuration name="receive2" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="pika" />
+      <module name="ev-sc" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/pika" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/receive2.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="send" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="pika" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/send.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pika/receive2.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -159,18 +154,18 @@
       <method v="2" />
     </configuration>
     <configuration name="send2" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="pika" />
+      <module name="ev-sc" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/pika" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/send2.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pika/send2.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -181,10 +176,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.receive2" />
         <item itemvalue="Python.send2" />
-        <item itemvalue="Python.receive" />
-        <item itemvalue="Python.send" />
+        <item itemvalue="Python.RealTimeSmartCharge" />
+        <item itemvalue="Python.receive2" />
       </list>
     </recent_temporary>
   </component>
@@ -193,25 +187,24 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="e70ef3ef-6e52-44f7-baa4-442e7ee18980" name="Default Changelist" comment="" />
-      <created>1554174099317</created>
+      <changelist id="8768fc65-af4b-4310-a93f-42b031d84c21" name="Default Changelist" comment="" />
+      <created>1555029528373</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1554174099317</updated>
+      <updated>1555029528373</updated>
     </task>
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1696" height="1026" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.111580215" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24969843" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32922733" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39977604" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.45576707" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -225,40 +218,38 @@
     </layout>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/send.py">
+    <entry file="file://$PROJECT_DIR$/pika/receive2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="45" selection-start-line="4" selection-start-column="36" selection-end-line="4" selection-end-column="45" />
+        <state relative-caret-position="357">
+          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/receive.py">
+    <entry file="file://$PROJECT_DIR$/receiveData.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
+        <state relative-caret-position="374">
+          <caret line="22" column="30" selection-start-line="22" selection-start-column="30" selection-end-line="22" selection-end-column="30" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Roaming/Python/Python36/site-packages/pika/adapters/blocking_connection.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="481" selection-start-line="481" selection-end-line="481" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/receive2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="32" selection-start-line="5" selection-start-column="32" selection-end-line="5" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/send2.py">
+    <entry file="file://$PROJECT_DIR$/pika/send.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/../realtime_sim/RealTimeSmartCharge.py">
+    <entry file="file://$PROJECT_DIR$/pika/receive.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pika/send2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2742" />
+        <state relative-caret-position="238">
+          <caret line="14" column="76" selection-start-line="14" selection-start-column="76" selection-end-line="14" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/realtime_sim/RealTimeSmartCharge.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-545">
+          <caret line="280" column="22" selection-start-line="280" selection-start-column="22" selection-end-line="280" selection-end-column="22" />
+        </state>
       </provider>
     </entry>
   </component>

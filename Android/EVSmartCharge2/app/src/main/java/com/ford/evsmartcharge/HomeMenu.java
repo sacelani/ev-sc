@@ -299,11 +299,11 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
 
                         //Initiate Message
                         message = "";
-                        message += "-BC:" + batteryCapacity;
-                        message += "-RC:" + rCharge;
-                        message += "-PC:" + seekVal;
-                        message += "-PN:" + portNumber;
-                        message += "-ET:" + mTimePicker.getCurrentHour() + ":" + mTimePicker.getCurrentMinute();
+                        message += "-BC;" + batteryCapacity;
+                        message += "-RC;" + rCharge;
+                        message += "-PC;" + seekVal;
+                        message += "-PN;" + portNumber;
+                        message += "-ET;" + (mTimePicker.getCurrentHour() + Math.round((mTimePicker.getCurrentMinute()/60.0)*100.0)/100.0);
 
                         channel.basicPublish("", EXCHANGE_NAME, null, message.getBytes());
                         System.out.println(" [x] Sent '" + "ev-sc" + "':'" + message + "'");

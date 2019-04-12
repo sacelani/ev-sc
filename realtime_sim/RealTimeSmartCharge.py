@@ -13,6 +13,7 @@ from Vehicle import *
 from Port import *
 from Station import *
 
+import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 from socket import *
@@ -24,10 +25,10 @@ ADD_CAR = 1
 DEBUG = 0
 
 ChargeCapacity = 0
-ChargeSpeed = 0
-ChargeUpdate = 0
-ChargeRequest = 0
-PortRequest = 0
+ReqCharge = 0
+PortCharge = 0
+PortNumber = 0
+EstimatedTime = 0
 
 # -----------------------------------------------------------------------------
 # Func: Calculates the charge rate in kilowatts for each of the cars parked
@@ -38,9 +39,9 @@ def stationAlg(station, time, pause_time):
     # for every time sampling point
     for x in range(len(time)):
 
-        if(ADD_CAR and time[x] == pause_time):
+        #if(ADD_CAR and time[x] == pause_time):
             # Add a car to 3rd car spot in Port 3
-            addCar(station, pause_time, time)
+         #   addCar(station, pause_time, time)
 
         # go through every vehicle in every port to get priorities
         for port in station.ports:
@@ -173,69 +174,72 @@ def gather_app_data():
 
     return data
 
-#Example input BC:7-CS:3-.....
-#BC - Charge Capacity
-#CS - Charge Speed
-#CU - Charge Update
-#CR - Charge Request
-#PR - Port Request
-def appToSim(inputString):
-	#inputString = "-BC:7.235-CS:5.322-"
-	commandList = inputString.split("-")  #Split input string into commands
-	commandList = commandList[1:]	
-	commandList = commandList[:-1]  #Remove empty command resulting in last "-"
-	
-	command = "" #storage for individual command from Command List
-	
-	# identifier="" #Identifier from a given command ex: "BC"
-	
-	commIDPair = {}
-	
-	value = 0     #Float value of the command
-	
-	
-	for cmd in commandList:
-		command = cmd.split(":")
-		commIDPair.update({ command[0] : float(command[1]) })
-		#print(commIDPair[command[0]])
-		
-	for cmd in commIDPair:
-		if (cmd == "BC"):
-			ChargeCapcity = commIDPair["BC"]
-		if (cmd == "CS"):
-			ChargeSpeed = commIDPair["CS"]
-		if (cmd == "CU"):
-			ChargeUpdate = commIDPair["CU"]
-		if (cmd == "CR"):
-			ChargeRequest = commIDPair["CR"]
-		if (cmd == "PR"):
-			PortRequest = commIDPair["PR"]
+    #Example input BC:7-CS:3-.....
+def appToSim(inputBytes):
+    inputString = str(inputBytes)
+
+    #trim string
+    inputString = inputString[2:]
+    inputString = inputString[:-1]
+
+    #split string into commands
+    commandList = inputString.split("-")  #Split input string into commands
+    commandList = commandList[1:]
+    commandList = commandList[:-1]  #Remove empty command resulting in last "-"
+
+    command = "" #storage for individual command from Command List
+
+    # identifier="" #Identifier from a given command ex: "BC"
+
+    commIDPair = {}
+
+    value = 0     #Float value of the command
+
+    for cmd in commandList:
+        command = cmd.split(";")
+        commIDPair.update({ command[0] : float(command[1]) })
+
+    for cmd in commIDPair:
+        if (cmd == "BC"):
+            ChargeCapacity = float(commIDPair["BC"])
+        if (cmd == "RC"):
+            ReqCharge = float(commIDPair["RC"])
+        if (cmd == "PC"):
+            PortCharge = float(commIDPair["PC"])
+        if (cmd == "PN"):
+            PortNumber = int(commIDPair["PN"])
+        if (cmd == "ET"):
+            EstimatedTime = float(commIDPair["ET"])
 
 
 
 
 #listens for data from rabbitMQ connection
 def dataFromApp():
-	# Access the CLODUAMQP_URL environment variable and parse it (fallback to localhost)
-	url = os.environ.get('CLOUDAMQP_URL', 'amqp://msprqdua:XO-wSDRahPG_y2HHwzLlP80B0NiB31h-@wombat.rmq.cloudamqp.com/msprqdua')
-	params = pika.URLParameters(url)
-	connection = pika.BlockingConnection(params)
-	channel = connection.channel() # start a channel
-	channel.queue_delete(queue='hello')  # Delete Queue 
-	channel.queue_declare(queue='hello') # Declare a queue
-	
-	# create a function which is called on incoming messages
-	def callback(ch, method, properties, body):
-		print("Received: %r" % body)
-	
-	# set up subscription on the queue
-	channel.basic_consume(consumer_callback = callback, queue='hello')
-	
-	# start consuming (blocks)
-	print("Waiting for messages.   Press CRTL+C to exit.")
-	channel.start_consuming()
-	appToSim(body)
-	
+    # Access the CLODUAMQP_URL environment variable and parse it (fallback to localhost)
+    url = os.environ.get('CLOUDAMQP_URL', 'amqp://msprqdua:XO-wSDRahPG_y2HHwzLlP80B0NiB31h-@wombat.rmq.cloudamqp.com/msprqdua')
+    params = pika.URLParameters(url)
+    connection = pika.BlockingConnection(params)
+    channel = connection.channel() # start a channel
+    channel.queue_delete(queue='hello')  # Delete Queue
+    channel.queue_declare(queue='hello') # Declare a queue
+
+    # create a function which is called on incoming messages
+    def callback(ch, method, properties, body):
+        print("Received: %r" % body)
+        appToSim(body)
+        ch.close()
+        return
+
+    # set up subscription on the queue
+    channel.basic_consume(consumer_callback = callback, queue='hello')
+
+    # start consuming (blocks)
+    print("Waiting for messages.   Press CRTL+C to exit.")
+    channel.start_consuming()
+
+
+
 
 
 # -----------------------------------------------------------------------------
@@ -260,23 +264,46 @@ def main():
     # ------------ initialize the day of vehicles for simulation ------------ #
 
     # init vehicle arrays (packCapacity, arrival, departure, requestedCharge, maxChargeRate, initialSOC, time)
-    
-    vehicles_port0 = [Vehicle(40., 7.5,   11.5, 32., 16., 20., time),   # 7:30 am - 11:30 am
-                      Vehicle(50., 13.25, 17.,  40., 16., 15., time),   # 1:15 pm - 5 pm
-                      None] #Vehicle(23., 17.5,  18.,  15., 50., 14., time)]   # 5:30 pm - 6 pm
 
-    vehicles_port1 = [Vehicle(35., 7.75,  14.5, 30., 16., 10., time),   # 7:45 am  - 2:30 pm
-                      Vehicle(40., 14.75, 17.,  25., 16., 20., time),   # 2:45 pm - 5 pm
-                      None] #Vehicle(50., 17.25, 18.,  40., 50., 30., time)]   # 5:15 pm  - 6 pm
+    vehicles_port0 = [Vehicle(40., 7.5,   11.5, 32., 16., 20., time)     # 7:30 am - 11:30 am
+                      #Vehicle(50., 13.25, 17.,  40., 16., 15., time),   # 1:15 pm - 5 pm
+                      ] #Vehicle(23., 17.5,  18.,  15., 50., 14., time)]   # 5:30 pm - 6 pm
 
-    vehicles_port2 = [Vehicle(40., 7.5,  11.5, 32., 16., 30., time),    # 7:30 am - 11:30 am
-                      Vehicle(50., 11.5, 17.,  40., 16., 2., time),     # 11:30 am - 5 pm
-                      None] #Vehicle(50., 17.5, 18.,  40., 50., 37., time)]    # 5:30 pm - 6 pm
+    vehicles_port1 = [Vehicle(35., 7.75,  14.5, 30., 16., 10., time)   # 7:45 am  - 2:30 pm
+                      #,Vehicle(40., 14.75, 17.,  25., 16., 20., time)  # 2:45 pm - 5 pm
+                      #,Vehicle(50., 17.25, 18.,  40., 50., 30., time)   # 5:15 pm  - 6 pm
+                      ]
 
-    vehicles_port3 = [Vehicle(50., 7.75,  13.5, 50., 20., 34., time),   # 7:45 am - 1:30 pm
-                      Vehicle(40., 13.5,  17.,  30., 19., 20., time),   # 1:30 pm - 5 pm
+    vehicles_port2 = [Vehicle(40., 7.5,  11.5, 32., 16., 30., time)      # 7:30 am - 11:30 am
+                      #Vehicle(50., 11.5, 17.,  40., 16., 2., time),     # 11:30 am - 5 pm
+                      ] #Vehicle(50., 17.5, 18.,  40., 50., 37., time)]    # 5:30 pm - 6 pm
+
+    vehicles_port3 = [Vehicle(50., 7.75,  13.5, 50., 20., 34., time)   # 7:45 am - 1:30 pm
+                      #Vehicle(40., 13.5,  17.,  30., 19., 20., time),   # 1:30 pm - 5 pm
                       #Vehicle(30., 17.5 , 18.,  15., 30., 10., time)]  # 5:30 pm - 6 pm
-                      None]     # Where vehicle from app interaction goes
+                      ]     # Where vehicle from app interaction goes
+
+    #This change here waits for the user to send data over the rabbitMQ connection.
+    #once received this data will be used to add a new vehicle to one of the ports
+    #depending on which por the user entered.
+    dataFromApp()
+
+    timeNow = round(float(datetime.datetime.now().hour) + datetime.datetime.now().minute / 60, 2)
+
+    newVehicle = Vehicle(ChargeCapacity, timeNow, EstimatedTime, ReqCharge, 16.0, 20.0, time)
+
+    if PortNumber == 0:
+        vehicles_port0.append(newVehicle)
+        print("Selected p0")
+    elif PortNumber == 1:
+        vehicles_port1.append(newVehicle)
+        print("Selected p1")
+    elif PortNumber == 2:
+        vehicles_port2.append(newVehicle)
+        print("Selected p2")
+    elif PortNumber == 3:
+        vehicles_port3.append(newVehicle)
+        print("Selected p3")
 
     # init ports
     station_ports = [Port(vehicles_port0, PORT_MAX_POWER, time),
@@ -288,7 +315,6 @@ def main():
     station = Station(station_ports, STATION_TOTAL_POWER, time)
 
     # ----------------------------------------------------------------------- #
-
     # run the algorithm
     stationAlg(station, time, pause_time)
 
@@ -307,7 +333,6 @@ def main():
             x+=1
 
     # ---------------------- plot all simulation data ----------------------- #
-
 
     plt.figure(1)
 
