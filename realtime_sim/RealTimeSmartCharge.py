@@ -185,7 +185,7 @@ def appToSim(inputBytes):
     #split string into commands
     commandList = inputString.split("-")  #Split input string into commands
     commandList = commandList[1:]
-    commandList = commandList[:-1]  #Remove empty command resulting in last "-"
+    #commandList = commandList[:-1]  #Remove empty command resulting in last "-"
 
     command = "" #storage for individual command from Command List
 
@@ -198,18 +198,25 @@ def appToSim(inputBytes):
     for cmd in commandList:
         command = cmd.split(";")
         commIDPair.update({ command[0] : float(command[1]) })
+    print(commandList)
 
     for cmd in commIDPair:
         if (cmd == "BC"):
+            global ChargeCapacity 
             ChargeCapacity = float(commIDPair["BC"])
         if (cmd == "RC"):
+            global ReqCharge 
             ReqCharge = float(commIDPair["RC"])
         if (cmd == "PC"):
+            global PortCharge 
             PortCharge = float(commIDPair["PC"])
         if (cmd == "PN"):
+            global PortNumber
             PortNumber = int(commIDPair["PN"])
         if (cmd == "ET"):
+            global EstimatedTime
             EstimatedTime = float(commIDPair["ET"])
+            print(EstimatedTime)
 
 
 
@@ -255,17 +262,17 @@ def main():
     time = np.arange(6., 20., 0.25) # time sampling array
     total_power_line = [STATION_TOTAL_POWER] * len(time)
 
-    pause_time = 0
-    if ADD_CAR:
-        pause_time = float(input("Enter time to pause simulation (6 - 20): "))
-        print("Pause time is", pause_time )
+    pause_time = 23
+   # if ADD_CAR:
+    #    pause_time = float(input("Enter time to pause simulation (6 - 20): "))
+     #   print("Pause time is", pause_time )
 
 
     # ------------ initialize the day of vehicles for simulation ------------ #
 
     # init vehicle arrays (packCapacity, arrival, departure, requestedCharge, maxChargeRate, initialSOC, time)
 
-    vehicles_port0 = [Vehicle(40., 7.5,   11.5, 32., 16., 20., time)     # 7:30 am - 11:30 am
+    vehicles_port0 = [#Vehicle(40., 7.5,   11.5, 32., 16., 20., time)     # 7:30 am - 11:30 am
                       #Vehicle(50., 13.25, 17.,  40., 16., 15., time),   # 1:15 pm - 5 pm
                       ] #Vehicle(23., 17.5,  18.,  15., 50., 14., time)]   # 5:30 pm - 6 pm
 
@@ -291,10 +298,13 @@ def main():
     timeNow = round(float(datetime.datetime.now().hour) + datetime.datetime.now().minute / 60, 2)
 
     newVehicle = Vehicle(ChargeCapacity, timeNow, EstimatedTime, ReqCharge, 16.0, 20.0, time)
+    print("Vehicle(40., 7.5,   11.5, 32., 16., 20., time)")
+    print(ReqCharge)
 
     if PortNumber == 0:
         vehicles_port0.append(newVehicle)
         print("Selected p0")
+        print(EstimatedTime)
     elif PortNumber == 1:
         vehicles_port1.append(newVehicle)
         print("Selected p1")
@@ -339,7 +349,7 @@ def main():
     # subplot for port 0 delivered power
     plt.subplot(2, 2, 1)
     plt.plot(time, station.ports[0].delivered_power, 'bo-')
-    plt.xlabel('Time of Day (6 am - 8 pm)')
+    #plt.xlabel('Time of Day (6 am - 8 pm)')
     plt.ylabel('Plug Power (kW)')
     plt.title('Port 0 Delivered Power')
     plt.grid(True)
@@ -347,7 +357,7 @@ def main():
     # subplot for port 1 delivered power
     plt.subplot(2, 2, 2)
     plt.plot(time, station.ports[1].delivered_power, 'bo-')
-    plt.xlabel('Time of Day (6 am - 8 pm)')
+    #plt.xlabel('Time of Day (6 am - 8 pm)')
     plt.ylabel('Plug Power (kW)')
     plt.title('Port 1 Delivered Power')
     plt.grid(True)

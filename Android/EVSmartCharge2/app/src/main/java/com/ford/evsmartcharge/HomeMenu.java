@@ -272,7 +272,7 @@ public class HomeMenu extends Fragment implements View.OnClickListener {
             double kilometers = miles * 1.60934;                               // Distance in Kilometers.
             DecimalFormat df = new DecimalFormat("#.##");
             requestedCharge += df.format(miles) + " miles";
-            rCharge += df.format(miles);
+            //rCharge += df.format(miles);
 
         } else if (mPref.getString(this.getString(R.string.pref_unit_key), "0").equals("2")) { // kilometers format
 
